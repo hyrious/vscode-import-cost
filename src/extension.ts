@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
     }),
     commands.registerCommand('import-cost.clear-cache', () => {
-      cache.clear();
+      deactivate();
       if (isEnabled) update(window.activeTextEditor?.document);
     })
   );
@@ -105,7 +105,7 @@ function clearDecorations() {
 let timer: NodeJS.Timeout;
 function debounceFlushDecorations(fileName: string) {
   clearTimeout(timer);
-  timer = setTimeout(flushDecorations.bind(null, fileName), 100);
+  timer = setTimeout(flushDecorations.bind(null, fileName), 20);
 }
 
 function flushDecorations(fileName: string) {
