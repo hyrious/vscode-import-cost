@@ -16,6 +16,10 @@ export function activate(context: vscode.ExtensionContext) {
       } else {
         deactivate();
       }
+    }),
+    commands.registerCommand('import-cost.clear-cache', () => {
+      cache.clear();
+      if (isEnabled) update(window.activeTextEditor?.document);
     })
   );
 
