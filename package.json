@@ -1,0 +1,68 @@
+{
+  "name": "import-cost",
+  "displayName": "Import Cost",
+  "description": "Yet another decoration extension that prints import cost",
+  "license": "MIT",
+  "version": "0.0.1",
+  "main": "./out/extension.js",
+  "engines": {
+    "vscode": "^1.73.0"
+  },
+  "publisher": "hyrious",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hyrious/vscode-import-cost.git"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:vue",
+    "onLanguage:svelte"
+  ],
+  "keywords": [
+    "import",
+    "require",
+    "size",
+    "weight",
+    "esbuild"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "import-cost.toggle",
+        "title": "Toggle Import Cost"
+      },
+      {
+        "command": "import-cost.clear-cache",
+        "title": "Import Cost: Clear Cache"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "esbuild src/extension.ts --bundle --platform=node --main-fields=module,main --external:vscode --external:esbuild --outdir=out --minify --sourcemap --sources-content=false",
+    "watch": "esbuild --watch src/extension.ts --bundle --platform=node --main-fields=module,main --external:vscode --external:esbuild --outdir=out --minify --sourcemap --sources-content=false",
+    "pretest": "pnpm run compile",
+    "test": "node ./out/test/runTest.js"
+  },
+  "dependencies": {
+    "esbuild": "^0.15.16"
+  },
+  "devDependencies": {
+    "@hyrious/import-cost": "^0.1.1",
+    "@types/glob": "^8.0.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.73.0",
+    "@vscode/test-electron": "^2.2.0",
+    "filesize": "^10.0.5",
+    "glob": "^8.0.3",
+    "mocha": "^10.1.0",
+    "typescript": "^4.8.4"
+  }
+}
