@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@hyrious/import-cost': ^0.1.1
+  '@hyrious/import-cost': ^0.1.2
   '@types/glob': ^8.0.0
   '@types/mocha': ^10.0.0
   '@types/node': 16.x
@@ -13,16 +13,14 @@ specifiers:
   mocha: ^10.1.0
   typescript: ^4.8.4
 
-dependencies:
-  esbuild: 0.15.16
-
 devDependencies:
-  '@hyrious/import-cost': 0.1.1_esbuild@0.15.16
+  '@hyrious/import-cost': 0.1.2_esbuild@0.15.16
   '@types/glob': 8.0.0
   '@types/mocha': 10.0.1
   '@types/node': 16.18.3
   '@types/vscode': 1.73.1
   '@vscode/test-electron': 2.2.0
+  esbuild: 0.15.16
   filesize: 10.0.5
   glob: 8.0.3
   mocha: 10.1.0
@@ -142,6 +140,7 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/linux-loong64/0.15.16:
@@ -150,13 +149,17 @@ packages:
     cpu: [loong64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
-  /@hyrious/import-cost/0.1.1_esbuild@0.15.16:
-    resolution: {integrity: sha512-4hGwa8tYuUNrrCmSj+e7uL9niBwu2jIF5r9m8itsBEmB3lz0oi4v480MIjXI7oWj8WZLxL9yC/Ky8noIuKognw==}
+  /@hyrious/import-cost/0.1.2_esbuild@0.15.16:
+    resolution: {integrity: sha512-GTaXWo9hah6ZzxXC0M0hLSTv7E3qgT5fmBsGBRbnqbmmilZDrcqbsuncRVUJNkqcFoSVBAQ/rviL+54ei6tHhA==}
     hasBin: true
     peerDependencies:
       esbuild: '*'
+    peerDependenciesMeta:
+      esbuild:
+        optional: true
     dependencies:
       '@babel/parser': 7.20.5
       '@babel/traverse': 7.20.5
@@ -485,6 +488,7 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-android-arm64/0.15.16:
@@ -493,6 +497,7 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-darwin-64/0.15.16:
@@ -501,6 +506,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-darwin-arm64/0.15.16:
@@ -509,6 +515,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-freebsd-64/0.15.16:
@@ -517,6 +524,7 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-freebsd-arm64/0.15.16:
@@ -525,6 +533,7 @@ packages:
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-32/0.15.16:
@@ -533,6 +542,7 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-64/0.15.16:
@@ -541,6 +551,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-arm/0.15.16:
@@ -549,6 +560,7 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-arm64/0.15.16:
@@ -557,6 +569,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-mips64le/0.15.16:
@@ -565,6 +578,7 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-ppc64le/0.15.16:
@@ -573,6 +587,7 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-riscv64/0.15.16:
@@ -581,6 +596,7 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-s390x/0.15.16:
@@ -589,6 +605,7 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-netbsd-64/0.15.16:
@@ -597,6 +614,7 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-openbsd-64/0.15.16:
@@ -605,6 +623,7 @@ packages:
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-sunos-64/0.15.16:
@@ -613,6 +632,7 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-windows-32/0.15.16:
@@ -621,6 +641,7 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-windows-64/0.15.16:
@@ -629,6 +650,7 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-windows-arm64/0.15.16:
@@ -637,6 +659,7 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild/0.15.16:
@@ -667,6 +690,7 @@ packages:
       esbuild-windows-32: 0.15.16
       esbuild-windows-64: 0.15.16
       esbuild-windows-arm64: 0.15.16
+    dev: true
 
   /escalade/3.1.1:
     resolution: {integrity: sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==}

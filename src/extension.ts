@@ -3,10 +3,16 @@ import type * as vscode from 'vscode';
 import { window, workspace, commands, Range, Position } from 'vscode';
 import { importCost, cache, Lang, ImportCostResult } from '@hyrious/import-cost';
 import { filesize } from 'filesize';
+import { spawnSync } from 'child_process';
+import { platform } from 'os';
+import { join } from 'path';
 
-let isEnabled = false;
+let isEnabled = true;
+let esbuildPath: string | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
+  esbuildPath ||= findEsbuildPath();
+
   context.subscriptions.push(
     workspace.onDidChangeTextDocument((ev) => update(ev.document)),
     window.onDidChangeActiveTextEditor((ev) => update(ev?.document)),
@@ -29,6 +35,16 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
   cache.clear();
   clearDecorations();
+}
+
+function findEsbuildPath() {
+  return join(
+    spawnSync(platform() === 'win32' ? 'npm.cmd' : 'npm', ['root', '-g'], {
+      shell: true,
+      encoding: 'utf8',
+    }).stdout.trim(),
+    'esbuild/lib/main.js'
+  );
 }
 
 function detectLanguage({ fileName, languageId }: vscode.TextDocument): Lang | undefined {
@@ -58,7 +74,7 @@ async function refresh(document: vscode.TextDocument, lang: Lang) {
   const { fileName } = document;
   const code = document.getText();
 
-  const p = importCost(fileName, code, { lang, filter: node_modules_only });
+  const p = importCost(fileName, code, { lang, esbuildPath, filter: node_modules_only });
   emitters.set(fileName, p);
 
   const result = await p;
