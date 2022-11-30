@@ -50,6 +50,9 @@
     "pretest": "pnpm run compile",
     "test": "node ./out/test/runTest.js"
   },
+  "dependencies": {
+    "esbuild": "npm:esbuild-wasm@^0.15.16"
+  },
   "devDependencies": {
     "@hyrious/import-cost": "^0.1.2",
     "@types/glob": "^8.0.0",
@@ -57,7 +60,6 @@
     "@types/node": "16.x",
     "@types/vscode": "^1.73.0",
     "@vscode/test-electron": "^2.2.0",
-    "esbuild": "^0.15.16",
     "filesize": "^10.0.5",
     "glob": "^8.0.3",
     "mocha": "^10.1.0",
