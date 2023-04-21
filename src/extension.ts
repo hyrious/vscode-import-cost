@@ -60,9 +60,20 @@ function update(document: vscode.TextDocument | undefined) {
   if (isEnabled && document) {
     const lang = detectLanguage(document);
     if (lang) {
-      refresh(document, lang);
+      refresh_(document, lang);
     }
   }
+}
+
+function noop() {
+  return null;
+}
+
+// Slightly debounce the refresh to avoid too many esbuild runs.
+let refresh_timer = setTimeout(noop);
+function refresh_(document: vscode.TextDocument, lang: Lang) {
+  clearTimeout(refresh_timer);
+  refresh_timer = setTimeout(refresh.bind(null, document, lang), 500);
 }
 
 function node_modules_only(path: string) {
@@ -77,9 +88,10 @@ async function refresh(document: vscode.TextDocument, lang: Lang) {
   const p = importCost(fileName, code, { lang, esbuildPath, filter: node_modules_only });
   emitters.set(fileName, p);
 
-  const result = await p;
+  const result = await p.catch(noop);
   if (emitters.get(fileName) === p) {
     emitters.delete(fileName);
+    if (!result) return;
     setDecorations(fileName, result);
   }
 }
@@ -102,10 +114,10 @@ function clearDecorations() {
   }
 }
 
-let timer: NodeJS.Timeout;
+let flush_timer = setTimeout(noop);
 function debounceFlushDecorations(fileName: string) {
-  clearTimeout(timer);
-  timer = setTimeout(flushDecorations.bind(null, fileName), 20);
+  clearTimeout(flush_timer);
+  flush_timer = setTimeout(flushDecorations.bind(null, fileName), 20);
 }
 
 function flushDecorations(fileName: string) {
