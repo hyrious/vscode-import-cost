@@ -74,6 +74,7 @@ function findEsbuildPath(): string | undefined {
   }
 
   let esbuildPath = join(p, 'esbuild', 'lib', 'main.js');
+  lastTestedEsbuildPath = esbuildPath;
   if (existsSync(esbuildPath)) {
     getLogger().info('esbuild:', esbuildPath);
     return esbuildPath;
