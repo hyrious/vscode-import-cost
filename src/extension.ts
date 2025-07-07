@@ -4,20 +4,44 @@ import { window, workspace, commands, Range, Position } from 'vscode';
 import { importCost, cache, Lang, ImportCostResult } from '@hyrious/import-cost';
 import { filesize } from 'filesize';
 import { spawnSync } from 'child_process';
-import { platform } from 'os';
 import { join } from 'path';
+import { existsSync } from 'fs';
+import { pathToFileURL } from 'url';
 
 let isEnabled = true;
 let esbuildPath: string | undefined;
+let lastTestedEsbuildPath: string | undefined;
+let logger: vscode.LogOutputChannel | undefined;
 
-export function activate(context: vscode.ExtensionContext) {
+function getLogger() {
+  logger ||= window.createOutputChannel('Import Cost', { log: true });
+  return logger;
+}
+
+export async function activate(context: vscode.ExtensionContext) {
   esbuildPath ||= findEsbuildPath();
+
+  while (!esbuildPath) {
+    const action = await window.showErrorMessage(
+      'Import Cost: Could not find esbuild' +
+        (lastTestedEsbuildPath ? ` at ${lastTestedEsbuildPath}.` : '.') +
+        ' Please install it globally.',
+      'Try again',
+      'Disable'
+    );
+    if (action === 'Disable') {
+      isEnabled = false;
+      return;
+    }
+    esbuildPath = findEsbuildPath();
+  }
 
   context.subscriptions.push(
     workspace.onDidChangeTextDocument((ev) => update(ev.document)),
     window.onDidChangeActiveTextEditor((ev) => update(ev?.document)),
     commands.registerCommand('import-cost.toggle', () => {
       if ((isEnabled = !isEnabled)) {
+        esbuildPath ||= findEsbuildPath();
         update(window.activeTextEditor?.document);
       } else {
         deactivate();
@@ -25,7 +49,10 @@ export function activate(context: vscode.ExtensionContext) {
     }),
     commands.registerCommand('import-cost.clear-cache', () => {
       deactivate();
-      if (isEnabled) update(window.activeTextEditor?.document);
+      if (isEnabled) {
+        esbuildPath = findEsbuildPath();
+        update(window.activeTextEditor?.document);
+      }
     })
   );
 
@@ -37,14 +64,22 @@ export function deactivate() {
   clearDecorations();
 }
 
-function findEsbuildPath() {
-  return join(
-    spawnSync(platform() === 'win32' ? 'npm.cmd' : 'npm', ['root', '-g'], {
-      shell: true,
-      encoding: 'utf8',
-    }).stdout.trim(),
-    'esbuild/lib/main.js'
-  );
+function findEsbuildPath(): string | undefined {
+  const win = process.platform === 'win32';
+  let p = win ? join(process.env.APPDATA!, 'npm', 'node_modules') : '/usr/local/lib/node_modules';
+
+  if (!existsSync(p)) {
+    let npm = win ? 'npm.cmd' : 'npm';
+    p = spawnSync(npm, ['root', '-g']).stdout.toString().trimEnd();
+  }
+
+  let esbuildPath = join(p, 'esbuild', 'lib', 'main.js');
+  if (existsSync(esbuildPath)) {
+    getLogger().info('esbuild:', esbuildPath);
+    return esbuildPath;
+  } else {
+    getLogger().warn('esbuild not found at', esbuildPath);
+  }
 }
 
 function detectLanguage({ fileName, languageId }: vscode.TextDocument): Lang | undefined {
@@ -85,10 +120,16 @@ async function refresh(document: vscode.TextDocument, lang: Lang) {
   const { fileName } = document;
   const code = document.getText();
 
-  const p = importCost(fileName, code, { lang, esbuildPath, filter: node_modules_only });
+  const p = importCost(fileName, code, {
+    lang,
+    esbuildPath: esbuildPath && pathToFileURL(esbuildPath).toString(),
+    filter: node_modules_only,
+  });
   emitters.set(fileName, p);
 
-  const result = await p.catch(noop);
+  const result = await p.catch((err) => {
+    getLogger().error(err);
+  });
   if (emitters.get(fileName) === p) {
     emitters.delete(fileName);
     if (!result) return;

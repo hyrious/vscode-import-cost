@@ -1,0 +1,35 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - v*
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Publish VS Code Extension
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: npm
+      - name: Install Dependencies
+        run: |
+          npm ci
+          npm install -g @vscode/vsce
+      - name: Package
+        run: vsce package
+      - name: Publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          file=$(realpath $(ls -t *.vsix | head -1))
+          vsce publish -i $file -p ${{ secrets.VSCE_TOKEN }}
+          gh release create '${{ github.ref_name }}' -n "See [commits](https://github.com/hyrious/vscode-import-cost/commits/main/) for details." $file
