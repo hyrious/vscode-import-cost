@@ -3,7 +3,7 @@
   "name": "import-cost",
   "displayName": "Import Cost",
   "type": "module",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Yet another decoration extension that prints import cost",
   "license": "MIT",
   "repository": {
