@@ -66,14 +66,19 @@ export function deactivate() {
 
 function findEsbuildPath(): string | undefined {
   const win = process.platform === 'win32';
-  let p = win ? join(process.env.APPDATA!, 'npm', 'node_modules') : '/usr/local/lib/node_modules';
+  const mac = process.platform === 'darwin';
+  let p = win
+    ? join(process.env.APPDATA!, 'npm', 'node_modules')
+    : mac
+    ? '/opt/homebrew/lib/node_modules'
+    : '/usr/local/lib/node_modules';
 
-  if (!existsSync(p)) {
-    let npm = win ? 'npm.cmd' : 'npm';
+  if (!existsSync(join(p, 'esbuild', 'lib', 'main.js'))) {
+    const npm = win ? 'npm.cmd' : 'npm';
     const fnmNpmRoot = spawnSync('fnm', ['exec', '--using', 'default', npm, 'root', '-g'])
       .stdout?.toString()
       .trimEnd();
-    const globalNpmRoot = spawnSync(npm, ['root', '-g']).stdout?.toString().trimEnd();
+    const globalNpmRoot = spawnSync(npm, ['root', '-g'], { shell: win }).stdout?.toString().trimEnd();
     p = fnmNpmRoot ?? globalNpmRoot;
   }
 
@@ -148,6 +153,8 @@ const decorationType = window.createTextEditorDecorationType({});
 function setDecorations(fileName: string, result: ImportCostResult) {
   let map = new Map<number, { size: number; gzip: number }>();
   for (const pkg of result.packages) {
+    if (pkg.name.startsWith('node:')) continue;
+    if (pkg.name === 'electron' || pkg.name.startsWith('electron/')) continue;
     map.set(pkg.line, pkg);
   }
   decorations.set(fileName, map);
