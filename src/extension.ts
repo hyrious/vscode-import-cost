@@ -70,7 +70,11 @@ function findEsbuildPath(): string | undefined {
 
   if (!existsSync(p)) {
     let npm = win ? 'npm.cmd' : 'npm';
-    p = spawnSync(npm, ['root', '-g']).stdout.toString().trimEnd();
+    const fnmNpmRoot = spawnSync('fnm', ['exec', '--using', 'default', npm, 'root', '-g'])
+      .stdout?.toString()
+      .trimEnd();
+    const globalNpmRoot = spawnSync(npm, ['root', '-g']).stdout?.toString().trimEnd();
+    p = fnmNpmRoot ?? globalNpmRoot;
   }
 
   let esbuildPath = join(p, 'esbuild', 'lib', 'main.js');
