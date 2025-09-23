@@ -122,7 +122,7 @@ function refresh_(document: vscode.TextDocument, lang: Lang) {
 }
 
 function node_modules_only(path: string) {
-  return /^[@a-z]/.test(path);
+  return /^[@a-z]/.test(path) && !path.startsWith('@/') && !path.startsWith('node:');
 }
 
 const emitters = new Map<string, Promise<unknown>>();
@@ -143,6 +143,15 @@ async function refresh(document: vscode.TextDocument, lang: Lang) {
   if (emitters.get(fileName) === p) {
     emitters.delete(fileName);
     if (!result) return;
+    const logger = getLogger();
+    for (const error of result.errors) {
+      if (error.location) {
+        logger.error(`${error.location.file}:${error.location.line}: ${error.text}`);
+        logger.error(`  ${error.location.lineText}`);
+      } else {
+        logger.error(error.text);
+      }
+    }
     setDecorations(fileName, result);
   }
 }
@@ -153,8 +162,6 @@ const decorationType = window.createTextEditorDecorationType({});
 function setDecorations(fileName: string, result: ImportCostResult) {
   let map = new Map<number, { size: number; gzip: number }>();
   for (const pkg of result.packages) {
-    if (pkg.name.startsWith('node:')) continue;
-    if (pkg.name === 'electron' || pkg.name.startsWith('electron/')) continue;
     map.set(pkg.line, pkg);
   }
   decorations.set(fileName, map);

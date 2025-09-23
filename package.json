@@ -49,7 +49,7 @@
     "compile": "esbuild-dev src/build.ts"
   },
   "dependencies": {
-    "@hyrious/import-cost": "^0.1.5",
+    "@hyrious/import-cost": "^0.1.6",
     "filesize": "^11.0.12"
   },
   "devDependencies": {
