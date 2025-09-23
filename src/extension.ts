@@ -7,6 +7,7 @@ import { spawnSync } from 'child_process';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import { pathToFileURL } from 'url';
+import { homedir } from 'os';
 
 let isEnabled = true;
 let esbuildPath: string | undefined;
@@ -80,6 +81,15 @@ function findEsbuildPath(): string | undefined {
       .trimEnd();
     const globalNpmRoot = spawnSync(npm, ['root', '-g'], { shell: win }).stdout?.toString().trimEnd();
     p = fnmNpmRoot ?? globalNpmRoot;
+  }
+
+  if (!existsSync(join(p, 'esbuild', 'lib', 'main.js'))) {
+    // https://github.com/volta-cli/volta/blob/a7384f/crates/volta-layout/src/v4.rs#L29
+    const voltaHome =
+      process.env.VOLTA_HOME || (win ? join(process.env.LOCALAPPDATA!, 'Volta') : join(homedir(), '.volta'));
+    if (existsSync(voltaHome)) {
+      p = join(voltaHome, 'tools', 'image', 'packages');
+    }
   }
 
   let esbuildPath = join(p, 'esbuild', 'lib', 'main.js');
