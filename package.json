@@ -2,7 +2,6 @@
   "publisher": "hyrious",
   "name": "import-cost",
   "displayName": "Import Cost",
-  "type": "module",
   "version": "0.0.10",
   "description": "Yet another decoration extension that prints import cost",
   "license": "MIT",
@@ -22,7 +21,7 @@
   ],
   "main": "./out/extension.js",
   "engines": {
-    "vscode": "^1.104.0"
+    "vscode": "^1.99.0"
   },
   "activationEvents": [
     "onLanguage:javascript",
@@ -48,18 +47,16 @@
     "vscode:prepublish": "npm run compile",
     "compile": "esbuild-dev src/build.ts"
   },
-  "dependencies": {
-    "@hyrious/import-cost": "^0.1.6",
-    "filesize": "^11.0.12"
-  },
   "devDependencies": {
     "@hyrious/configs": "^0.1.4",
     "@hyrious/esbuild-dev": "^0.10.13",
     "@hyrious/esbuild-plugin-external": "^0.1.4",
+    "@hyrious/import-cost": "^0.1.6",
     "@types/node": "^24.5.2",
-    "@types/vscode": "^1.104.0",
+    "@types/vscode": "^1.99.0",
     "@vscode/test-electron": "^2.5.2",
     "esbuild": "^0.25.10",
+    "filesize": "^11.0.12",
     "typescript": "^5.9.2"
   }
 }
