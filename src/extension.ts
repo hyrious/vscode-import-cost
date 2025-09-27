@@ -88,7 +88,7 @@ function findEsbuildPath(): string | undefined {
     const voltaHome =
       process.env.VOLTA_HOME || (win ? join(process.env.LOCALAPPDATA!, 'Volta') : join(homedir(), '.volta'));
     if (existsSync(voltaHome)) {
-      p = join(voltaHome, 'tools', 'image', 'packages');
+      p = join(voltaHome, 'tools', 'image', 'packages', 'esbuild', 'lib', 'node_modules');
     }
   }
 
